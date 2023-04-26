@@ -6,11 +6,9 @@ function App() {
   return (
     <div className="App">
       <div className='container'>
-      <header className="App-header">
-        <a href="/" className="btn btn-primary shadow">Hello</a>
-      </header>
       <Dictionary />
-      <footer className="App-footer">Coded by Lukasz Szpilowski</footer>
+      <footer className="App-footer">
+        <a href='https://github.com/LSzpilowski?tab=repositories'>Coded by Lukasz Szpilowski</a></footer>
       </div>
     </div>
   );

@@ -1,8 +1,15 @@
 .App {
-  text-align: center;
-  margin: 30px 0;
+  display: block;
+  margin: 0 auto;
+  
 }
+
+.container {
+  display: block;
+  margin: 0 auto;
+}
+
 .App-footer {
   text-align: center;
-  margin: 30px 0;
+  margin-bottom: 15px;
 }
