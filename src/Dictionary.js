@@ -1,24 +1,54 @@
 import React, {useState} from "react";
 import axios from "axios";
 import Results from "./Results";
+import Photos from "./Photos";
 import "./Dictionary.css";
+// import { createClient } from 'pexels';
 
 export default function Dictionary () {
 
 let [keyWord, setKeyWord] = useState("");
 let [results, setResults] = useState();
+let [photos, setPhotos] = useState(null);
 
 
-function handleResponse (response) {
+// function handlePexelsResponse(response) {
+//   console.log(response);
+// }
+
+function handleDictionaryResponse (response) {
 setResults(response.data[0]);
 }
+
+function getPhotos(data) {
+// photos.map(photo => {
+
+setPhotos(data.photos);
+// })
+}
+
 
 function search (event) {
   event.preventDefault();
 
   // documentation: https://dictionaryapi.dev
   let apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${keyWord}`;
-  axios.get(apiUrl).then(handleResponse);
+  axios.get(apiUrl).then(handleDictionaryResponse);
+
+
+// documentation: https://www.pexels.com/api/documentation/?language=javascript#photos-search
+// website which help me out with fetch API authorization: https://medium.com/star-gazers/how-to-work-pexels-api-with-javascript-9cda16bbece9
+  fetch(`https://api.pexels.com/v1/search?query=${keyWord}&per_page=9`,{
+  headers: {
+    Authorization: "U70ZTYYUBbC0tHRpP4TJF8374KVThjwUHC1S4FvsmTeKDlH0FTbpfhnC"
+  }
+})
+  .then(resp => {
+    return resp.json()
+  })
+  .then(data => {
+    getPhotos(data);
+  })
 }
 
 
@@ -36,6 +66,7 @@ function changeSearch(event) {
       </div>
       <div className="resultsBox">
       <Results results={results}/>
+      <Photos photos={photos} />
       </div>
     </div>
   )
