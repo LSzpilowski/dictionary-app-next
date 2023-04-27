@@ -9,7 +9,7 @@ margin: 25px auto;
   margin: 15px 0;
   border: 1px;
   border-radius: 10px;
-  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
 .resultsBox {

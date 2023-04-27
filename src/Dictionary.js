@@ -32,7 +32,7 @@ function changeSearch(event) {
       <form  onSubmit={search}>
         <input className="searchWord" type="search" placeholder="type here..." onChange={changeSearch} />
       </form>
-      <p className="suggest">Type any word in English e.g.: health, active, hard-working</p>
+      <p className="suggest">Type any* word in English e.g.: health, active, hard-working (*except countries name)</p>
       </div>
       <div className="resultsBox">
       <Results results={results}/>
