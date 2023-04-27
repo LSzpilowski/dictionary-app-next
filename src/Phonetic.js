@@ -1,7 +1,6 @@
 import React from "react";
 
-export default function Phonetc (props) {
-console.log(props);
+export default function Phonetic (props) {
 function playAudio(event) {
 event.preventDefault();
 let snd = new Audio(`${props.phonetic.audio}`);
@@ -17,5 +16,6 @@ return (
 <span className="pronounceText">{props.phonetic.text}</span>
 </div>
 );
+} 
 }
-}
+

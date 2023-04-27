@@ -12,10 +12,6 @@ let [results, setResults] = useState();
 let [photos, setPhotos] = useState(null);
 
 
-// function handlePexelsResponse(response) {
-//   console.log(response);
-// }
-
 function handleDictionaryResponse (response) {
 setResults(response.data[0]);
 }
@@ -62,7 +58,7 @@ function changeSearch(event) {
       <form  onSubmit={search}>
         <input className="searchWord" type="search" placeholder="type here..." onChange={changeSearch} />
       </form>
-      <p className="suggest">Type any* word in English e.g.: health, active, hard-working (*except countries name)</p>
+      <p className="suggest">Type any* word in English e.g.: health, active, hard-working (*except proper nouns)</p>
       </div>
       <div className="resultsBox">
       <Results results={results}/>
