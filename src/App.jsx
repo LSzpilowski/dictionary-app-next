@@ -1,7 +1,7 @@
 
 import * as S from './App.styles';
 import { Dictionary } from './components/Dictionary/Dictionary';
-import { Footer } from './components/Footer/Footer';
+import { Footer } from './app/components/Footer';
 
 function App() {
   return (
