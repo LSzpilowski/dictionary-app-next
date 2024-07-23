@@ -6,10 +6,10 @@ import { fontSans } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: {
-    default: "TodoListApp",
-    template: `TodoListApp`,
+    default: "Dictionary App",
+    template: `Dictionary App`,
   },
-  description: "Simple TodoList App - learning purpose",
+  description: "Simple Dictionary App - learning purpose",
 };
 
 export default function RootLayout({
