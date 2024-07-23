@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -6,31 +5,33 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Car } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+interface IPhoto {
+  original: string;
+  landscape: string;
+}
 
+interface IPhotosProps {
+  photos: IPhoto[];
+}
 
-export const Photos = (props) => {
-  if (props.photos) {
+export const Photos: React.FC<IPhotosProps> = ({ photos }) => {
+  if (photos && photos.length > 0) {
     return (
       <Carousel className="w-full my-5">
         <CarouselContent>
-          {props.photos.map((photo, index) => {
+          {photos.map((photo, index) => {
             return (
-              <CarouselItem className=" md:basis-1/2" key={index}>
-                <Link
-                  href={photo.src.original}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+              <CarouselItem className="md:basis-1/2" key={index}>
+                <Link href={photo.original} target="_blank" rel="noreferrer">
                   <Image
-                    src={photo.src.landscape}
+                    src={photo.landscape}
                     className="rounded-lg w-full"
-                    alt="image"
-                    width={100}
-                    height={50}
+                    alt={`Image ${index + 1}`}
+                    width={800}
+                    height={450}
                     quality={100}
                   />
                 </Link>
