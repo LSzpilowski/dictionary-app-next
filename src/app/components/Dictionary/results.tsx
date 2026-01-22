@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Meanings } from "./meanings";
-import { ExampleResults } from "./exampleResults";
 import { Phonetics } from "./phonetics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CopyButton } from "@/components/CopyButton";
@@ -40,7 +39,6 @@ const POSITIVE_WORDS = [
   "gracious"
 ];
 
-// Fisher-Yates shuffle algorithm
 const shuffleArray = <T,>(array: T[]): T[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -62,7 +60,7 @@ export const Results: React.FC<IResultsProps> = ({ results, onSearch }) => {
   if (results) {
     return (
       <div className="flex flex-col gap-5 border-hidden">
-        <Card className="card-hover">
+        <Card className="transition-all duration-200 hover:shadow-md hover:scale-[1.01]">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-3xl capitalize font-bold">
@@ -81,7 +79,7 @@ export const Results: React.FC<IResultsProps> = ({ results, onSearch }) => {
             })}
           </CardContent>
         </Card>
-        <div className="border-hidden space-y-0">
+        <div className="border-hidden space-y-0 flex flex-col gap-5">
           {results.meanings.map(function (meaning, index) {
             return (
               <div key={index}>
@@ -94,7 +92,7 @@ export const Results: React.FC<IResultsProps> = ({ results, onSearch }) => {
     );
   } else {
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-4 text-center animate-fade-in">
+      <div className="flex flex-col items-center justify-center py-12 px-4 text-center opacity-0 animate-[fadeIn_0.4s_ease-out_forwards]">
         <div className="mb-4 p-4 rounded-full bg-primary/10">
           <BookOpen className="h-12 w-12 text-primary" />
         </div>
@@ -109,7 +107,7 @@ export const Results: React.FC<IResultsProps> = ({ results, onSearch }) => {
               <button
                 key={word}
                 onClick={() => onSearch?.(word)}
-                className="synonym-chip cursor-pointer transition-transform hover:scale-105 active:scale-95"
+                className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm transition-colors hover:bg-primary/10 cursor-pointer transition-transform hover:scale-105 active:scale-95"
               >
                 {word}
               </button>

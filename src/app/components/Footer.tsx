@@ -1,24 +1,17 @@
-import React from 'react'
-import { Card } from '@/components/ui/card'
 import Link from 'next/link'
-import { Heart } from 'lucide-react'
 
 export const Footer = () => {
   return (
-    <Card className='w-full flex flex-col sm:flex-row items-center justify-center gap-2 p-4 mt-8 border-0 bg-transparent text-sm text-muted-foreground'>
-      <div className="flex items-center gap-2">
-        <span>Made with</span>
-        <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse-slow" />
-        <span>by</span>
-      </div>
+    <footer className='w-full flex flex-row items-center gap-1 py-6 px-4 sm:px-6 md:px-24 border-t border-border/40 text-sm text-muted-foreground'>
+      <span>Wordly by</span>
       <Link 
-        href='https://github.com/LSzpilowski?tab=repositories' 
+        href='https://www.lszpilowski.com' 
         target='_blank'
         rel="noopener noreferrer"
         className='font-semibold hover:text-foreground transition-colors underline-offset-4 hover:underline'
       >
         LSzpilowski
       </Link>
-    </Card>
+    </footer>
   )
 }

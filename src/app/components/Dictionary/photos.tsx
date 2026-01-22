@@ -67,7 +67,7 @@ export const Photos: React.FC<IPhotosProps> = ({ photos }) => {
                         blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
                         loading="lazy"
                       />
-                      <div className="image-counter">
+                      <div className="absolute bottom-4 right-4 rounded-full bg-black/60 backdrop-blur-sm px-3 py-1 text-xs font-medium text-white">
                         {index + 1}
                       </div>
                     </Link>
