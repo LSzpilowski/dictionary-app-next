@@ -18,11 +18,10 @@ export function ThemeToggle() {
   }
 
   return (
-    <div className="theme-toggle">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="rounded-full"
         aria-label="Toggle theme"
       >
@@ -32,6 +31,5 @@ export function ThemeToggle() {
           <Moon className="h-5 w-5" />
         )}
       </Button>
-    </div>
   );
 }

@@ -1,137 +1,246 @@
 
-Concise technical README for developers working on `dictionary-app-next`.
+# Wordly - Dictionary & Word Lookup App
 
----
+> Modern English dictionary web application with word definitions, phonetics, examples, and related images.
 
-## Project Summary
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.4-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2.3-blue)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Small dictionary web app built with Next.js (App Router). It looks up English words using the free Dictionary API and fetches related images from Pexels. The codebase is TypeScript-first and uses Tailwind CSS for styling.
+## Quick Start
 
-Key features:
-- Word lookup (`dictionaryapi.dev`)
-- Image gallery (Pexels)
-- Recent search history (localStorage)
-- Dark / light theme toggle
-- Skeleton loading, toasts, copy-to-clipboard
-- Mobile-first responsive UI
+```bash
+# Install dependencies
+pnpm install
 
----
+# Set up environment variables
+cp .env.example .env.local
+# Add your Pexels API key to .env.local
+
+# Run development server
+pnpm dev
+
+# Build for production
+pnpm build
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Prerequisites
+
+- Node.js 18.x or higher
+- pnpm 8.x or higher (recommended) or npm
+- Pexels API key (free at [pexels.com/api](https://www.pexels.com/api/))
 
 ## Tech Stack
 
-- Next.js 14 (App Router)
-- React 18
-- TypeScript (strict mode)
-- Tailwind CSS
-- Axios (dictionary API) + native fetch (Pexels)
-- Sonner (toasts)
-- Embla Carousel (images)
-- Lucide React (icons)
+- **Framework:** Next.js 16.1.4 (App Router, Turbopack)
+- **Language:** TypeScript 5.9.3 (strict mode)
+- **UI Library:** React 19.2.3
+- **Styling:** Tailwind CSS 3.4.19
+- **State Management:** React Hooks + Custom Cache
+- **APIs:**
+  - [Dictionary API](https://dictionaryapi.dev/) - Free, no auth required
+  - [Pexels API](https://www.pexels.com/api/) - 200 requests/hour, 20k/month
+- **UI Components:**
+  - Radix UI (primitives)
+  - Lucide React (icons)
+  - Sonner (toast notifications)
+  - Embla Carousel (image gallery)
 
----
+## Project Structure
 
-## Notable implemented improvements
+```
+dictionary-app-next/
+├── public/                      # Static assets
+│   ├── favicon.ico
+│   ├── icon.svg
+│   ├── apple-touch-icon.png
+│   ├── og-image.png
+│   ├── android-chrome-*.png
+│   └── site.webmanifest        # PWA manifest
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── layout.tsx          # Root layout with providers
+│   │   ├── page.tsx            # Home page
+│   │   ├── error.tsx           # Error boundary
+│   │   ├── global-error.tsx    # Layout-level error boundary
+│   │   ├── theme-provider.tsx  # Theme context
+│   │   └── components/
+│   │       ├── Dictionary.tsx          # Main search component
+│   │       ├── Footer.tsx              # App footer
+│   │       └── Dictionary/
+│   │           ├── results.tsx         # Word definition display
+│   │           ├── meanings.tsx        # Meanings & definitions
+│   │           ├── phonetics.tsx       # Pronunciation
+│   │           ├── photos.tsx          # Image gallery
+│   │           └── exampleResults.tsx  # Example sentences
+│   ├── components/
+│   │   ├── ui/                 # Reusable UI components
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── input.tsx
+│   │   │   └── carousel.tsx
+│   │   ├── ThemeToggle.tsx
+│   │   ├── SkeletonLoader.tsx
+│   │   └── CopyButton.tsx
+│   ├── hooks/
+│   │   └── useDebounceAndCache.ts  # Custom caching hook
+│   ├── lib/
+│   │   ├── fonts.ts            # Google Fonts config
+│   │   └── utils.ts            # Utility functions (cn)
+│   ├── styles/
+│   │   └── globals.css         # Global styles & Tailwind
+│   └── types/
+│       └── index.ts            # TypeScript interfaces
+├── .env.local                  # Environment variables (not in repo)
+├── next.config.mjs
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
+```
 
-This branch contains multiple modernizations and UX improvements, including:
-- Security: moved API keys to `.env.local` and dependency updates
-- TypeScript: `strict` enabled and target ES2020
-- Performance: debounced search (500ms) and in-memory cache (5 minutes)
-- UX: skeleton loaders, recent searches, copy buttons, image counter, theme toggle
-- Accessibility: ARIA attributes and focus-ring utilities
-- PWA/manifest updates and SEO optimizations
+## Configuration
 
-If you want a detailed changelog, see `CHANGELOG.md`.
+### Environment Variables
 
----
-
-## Environment variables
-
-Create a `.env.local` at project root with the following value:
+Create `.env.local` in the project root:
 
 ```env
+# Required for image search
 NEXT_PUBLIC_PEXELS_API_KEY=your_pexels_api_key_here
 ```
 
-The app will run without a Pexels key but image fetching will be disabled and an error toast will appear.
+**Note:** The app will work without the Pexels key, but image fetching will be disabled.
 
----
+### API Rate Limits
 
-## Local development
+- **Dictionary API:** No authentication, unlimited requests
+- **Pexels API:** 200 requests/hour, 20,000 requests/month (free tier)
 
-Install dependencies and run dev server (use npm; repo originally used pnpm but npm is supported):
+## Features
 
-```bash
-npm install
-npm run dev
-# Open http://localhost:3000
-```
+### Core Functionality
+- Word search with definitions, phonetics, and examples
+- Related image gallery (Pexels integration)
+- Recent search history (localStorage, max 5 items)
+- Dark/light theme toggle with system preference
+- Copy-to-clipboard for phonetics and definitions
+- Responsive design (mobile-first)
 
-Useful scripts (in `package.json`):
-- `dev` — development server (`next dev`)
-- `build` — production build (`next build`)
-- `start` — start production server (`next start`)
-- `lint` — run Next.js ESLint integration (`next lint`)
+### Performance Optimizations
+- In-memory cache (5-minute TTL)
+- Request debouncing (500ms)
+- Image lazy loading
+- Skeleton loaders
+- Turbopack for faster builds
 
-Notes:
-- ESLint: the project uses `eslint-config-next`. If you see an ESLint warning about unknown options (`useEslintrc`, `extensions`) this originates from internal Next.js options and does not block the build. We updated `eslint` to v9 and installed `eslint-plugin-import` to satisfy peer deps.
+### Accessibility
+- ARIA attributes (role, aria-label, aria-selected)
+- Semantic HTML (header, footer, main)
+- Keyboard navigation
+- Focus indicators
 
----
+### PWA Features
+- Web app manifest (installable on mobile)
+- Multiple icon sizes (favicon, apple-touch, android-chrome)
+- Theme color configuration
 
-## Architecture & important files
-
-- `src/app/` — Next.js App Router pages and layout
-  - `page.tsx` — main entry (renders `Dictionary` component)
-  - `layout.tsx` — application layout and providers
-- `src/app/components/Dictionary.tsx` — main search component, handles state, caching and API requests
-- `src/app/components/Dictionary/*` — subcomponents: `results.tsx`, `meanings.tsx`, `phonetics.tsx`, `photos.tsx`, `exampleResults.tsx`
-- `src/components/` — shared UI pieces (buttons, cards, inputs, skeleton loader, theme toggle, copy button)
-- `src/hooks/useDebounceAndCache.ts` — debounce + in-memory cache hook
-- `src/styles/globals.css` — Tailwind directives and custom utility classes
-- `src/types/index.ts` — shared TypeScript interfaces
-
----
-
-## Runtime behavior & dev tips
-
-- Search requests are debounced and cached. Cache TTL is 5 minutes.
-- Recent searches are stored in `localStorage` (max 5 items). Use the clear button in the UI to reset.
-- Suggested words in the empty state are randomly selected client-side (to avoid SSR hydration errors). The UI displays exactly 4 suggestions.
-
----
-
-## Building & CI
-
-Build locally:
+## Available Scripts
 
 ```bash
-npm run build
+# Development
+pnpm dev          # Start dev server with Turbopack
+
+# Production
+pnpm build        # Build optimized production bundle
+pnpm start        # Start production server
+
+# Code Quality
+pnpm lint         # Run ESLint (Next.js config)
 ```
 
-The build runs type checking and ESLint via Next.js. If CI enforces stricter ESLint rules, ensure `eslint` and plugins are in sync with the versions in `devDependencies`.
+## Architecture & Design Decisions
 
----
+### State Management
+- **Local State:** React useState/useEffect for component state
+- **Caching:** Custom `useCache` hook with Map-based in-memory storage
+- **Persistence:** localStorage for recent searches
 
-## Tests
+### API Strategy
+- **Native Fetch:** Replaced axios with native fetch for consistency
+- **Parallel Requests:** Dictionary + Photos fetched simultaneously
+- **Error Handling:** Toast notifications for user-friendly errors
 
-There are currently no automated tests included. Recommended next steps:
-- Add unit tests for `useDebounceAndCache` and `Dictionary` behaviour (mock APIs)
-- Add a small e2e test for search flow (Cypress / Playwright)
+### Performance
+- **Debouncing:** 500ms delay prevents excessive API calls
+- **Caching:** 5-minute TTL reduces redundant requests
+- **Constants:** Extracted magic numbers (CACHE_TTL_MS, PEXELS_PHOTOS_PER_PAGE)
 
----
+### Code Quality
+- **TypeScript:** Strict mode enabled, no implicit any
+- **Removed:** Unused dependencies (axios, zod, react-hook-form, react-icons)
+- **Error Boundaries:** Both route-level and layout-level handlers
 
 ## Deployment
 
-Deploy on Vercel or any Node-capable host. Ensure the `NEXT_PUBLIC_PEXELS_API_KEY` environment variable is configured in your deployment settings.
+### Vercel (Recommended)
 
----
+1. Push code to GitHub
+2. Import project to Vercel
+3. Add environment variable: `NEXT_PUBLIC_PEXELS_API_KEY`
+4. Deploy
+
+### Other Platforms
+
+Compatible with any Node.js hosting:
+- Netlify
+- Railway
+- Render
+- AWS Amplify
+
+Ensure environment variables are configured in your platform's settings.
+
+## Testing
+
+**Status:** No automated tests currently implemented.
+
+**Recommended additions:**
+- Unit tests for `useDebounceAndCache` hook
+- Integration tests for `Dictionary` component (mock APIs)
+- E2E tests with Playwright/Cypress
 
 ## Contributing
 
-- Use the `LS-1` branch for ongoing work in this session. Create feature branches off `main` for new changes.
-- Run `npm run lint` and `npm run build` before opening a PR.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+**Before submitting:**
+- Run `pnpm build` to ensure no errors
+- Check TypeScript types are correct
+- Test responsive design on mobile
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- [Dictionary API](https://dictionaryapi.dev/) - Free dictionary API
+- [Pexels](https://www.pexels.com/) - Free stock photos
+- [shadcn/ui](https://ui.shadcn.com/) - UI component inspiration
+- [Lucide](https://lucide.dev/) - Icon library
+
+## Support
+
+For issues or questions:
+- Open an issue on GitHub
+- Contact: [lszpilowski.com](https://www.lszpilowski.com)
 
 ---
 
-If you want, I can also:
-- Add unit tests and basic CI config
-- Add a short CONTRIBUTING.md with pre-commit hooks and lint rules
+**Built with Next.js and TypeScript**

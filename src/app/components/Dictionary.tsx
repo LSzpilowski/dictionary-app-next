@@ -1,7 +1,6 @@
 "use client";
 
 import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "sonner";
 import { Search, X, Clock, ChevronDown } from "lucide-react";
 import { Results } from "./Dictionary/results";
@@ -10,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SkeletonLoader } from "@/components/SkeletonLoader";
-import { useDebounce, useCache } from "@/hooks/useDebounceAndCache";
+import { useCache } from "@/hooks/useDebounceAndCache";
 import type { 
   IDictionaryResponse, 
   IPhoto, 
@@ -18,18 +17,19 @@ import type {
 } from "@/types";
 
 const MAX_RECENT_SEARCHES = 5;
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const PEXELS_PHOTOS_PER_PAGE = 9;
 
 export const Dictionary: React.FC = () => {
-  const [keyWord, setKeyWord] = useState<string>("");
+  const [keyWord, setKeyWord] = useState("");
   const [results, setResults] = useState<IDictionaryResponse | null>(null);
   const [photos, setPhotos] = useState<IPhoto[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [showRecent, setShowRecent] = useState<boolean>(false);
+  const [showRecent, setShowRecent] = useState(false);
   
-  const debouncedKeyword = useDebounce(keyWord, 500);
-  const dictionaryCache = useCache<IDictionaryResponse>(300000);
-  const photoCache = useCache<IPhoto[]>(300000);
+  const dictionaryCache = useCache<IDictionaryResponse>(CACHE_TTL_MS);
+  const photoCache = useCache<IPhoto[]>(CACHE_TTL_MS);
 
   const API_KEY = process.env.NEXT_PUBLIC_PEXELS_API_KEY;
 
@@ -65,29 +65,39 @@ export const Dictionary: React.FC = () => {
 
     try {
       const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
-      const response = await axios.get<IDictionaryResponse[]>(apiUrl);
+      const response = await fetch(apiUrl);
       
-      if (!response.data || response.data.length === 0) {
+      if (!response.ok) {
+        if (response.status === 404) {
+          toast.error("Word not found", {
+            description: "We don't have that word in our dictionary."
+          });
+        } else {
+          toast.error("Error", {
+            description: "Failed to fetch dictionary data. Please try again."
+          });
+        }
+        setResults(null);
+        return;
+      }
+
+      const data: IDictionaryResponse[] = await response.json();
+      
+      if (!data || data.length === 0) {
         toast.error("Word not found", {
           description: "We don't have that word in our dictionary."
         });
         setResults(null);
       } else {
-        const data = response.data[0];
-        setResults(data);
-        dictionaryCache.set(word, data);
+        const result = data[0];
+        setResults(result);
+        dictionaryCache.set(word, result);
         addToRecentSearches(word);
       }
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        toast.error("Word not found", {
-          description: "We don't have that word in our dictionary."
-        });
-      } else {
-        toast.error("Error", {
-          description: "Failed to fetch dictionary data. Please try again."
-        });
-      }
+      toast.error("Error", {
+        description: "Failed to fetch dictionary data. Please try again."
+      });
       setResults(null);
     }
   };
@@ -108,7 +118,7 @@ export const Dictionary: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://api.pexels.com/v1/search?query=${word}&per_page=9`,
+        `https://api.pexels.com/v1/search?query=${word}&per_page=${PEXELS_PHOTOS_PER_PAGE}`,
         {
           headers: {
             Authorization: API_KEY,
@@ -182,7 +192,7 @@ export const Dictionary: React.FC = () => {
   };
 
   return (
-    <div className="container-responsive py-6 md:py-10">
+    <div className="w-full px-4 md:max-w-4xl md:mx-auto md:px-6 py-6 md:py-10">
       <Card className="w-full border-0 md:border">
         <Card className="border-hidden p-4 md:p-6">
           <CardHeader className="px-0 pt-0">
@@ -191,15 +201,15 @@ export const Dictionary: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pb-0">
-            <form onSubmit={search} className="space-y-2">
+            <form onSubmit={search} className="space-y-2" role="search">
               <div className="relative">
-                <div className="search-container">
+                <div className="flex gap-2 flex-col sm:flex-row">
                   <div className="relative flex-1">
                     <Input
                       onChange={changeSearch}
                       value={keyWord}
                       onFocus={() => setShowRecent(recentSearches.length > 0)}
-                      className="hover:bg-secondary pr-10 focus-ring"
+                      className="hover:bg-secondary pr-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       placeholder="Type a word..."
                       disabled={isLoading}
                       aria-label="Search for a word"
@@ -222,7 +232,7 @@ export const Dictionary: React.FC = () => {
                   <Button 
                     type="submit" 
                     disabled={isLoading || !keyWord.trim()}
-                    className="search-button gap-2"
+                    className="w-full sm:w-auto sm:min-w-[100px] gap-2"
                     aria-label="Search"
                   >
                     <Search className="h-4 w-4" />
@@ -234,7 +244,7 @@ export const Dictionary: React.FC = () => {
 
                 
                 {showRecent && recentSearches.length > 0 && (
-                  <Card className="absolute z-10 w-full mt-2 p-2 animate-slide-in shadow-lg">
+                  <Card className="absolute z-10 w-full mt-2 p-2 opacity-0 animate-[slideIn_0.3s_ease-out_forwards] shadow-lg" role="listbox" aria-label="Recent searches">
                     <div className="flex items-center justify-between px-2 pb-2 border-b">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />
@@ -254,7 +264,9 @@ export const Dictionary: React.FC = () => {
                         <div
                           key={index}
                           onClick={() => selectRecentSearch(word)}
-                          className="recent-search-item"
+                          className="flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent cursor-pointer"
+                          role="option"
+                          aria-selected="false"
                         >
                           <span>{word}</span>
                           <ChevronDown className="h-4 w-4 -rotate-90" />
@@ -276,7 +288,7 @@ export const Dictionary: React.FC = () => {
             {isLoading ? (
               <SkeletonLoader />
             ) : (
-              <div className="animate-fade-in">
+              <div className="opacity-0 animate-[fadeIn_0.4s_ease-out_forwards]">
                 <Results results={results} onSearch={performSearch} />
                 <Photos photos={photos} />
               </div>

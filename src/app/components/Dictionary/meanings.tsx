@@ -5,14 +5,14 @@ import type { IMeaningsProps } from "@/types";
 
 export const Meanings: React.FC<IMeaningsProps> = ({ meaning }) => {
   return (
-    <Card className="mt-5 card-hover">
+    <Card className="transition-all duration-200 hover:shadow-md hover:scale-[1.01]">
       <CardHeader className="gap-5">
         <CardTitle className="text-xl capitalize">{meaning.partOfSpeech}</CardTitle>
         <CardContent className="p-0 space-y-4">
           {meaning.definitions.map((definition, index) => (
             <div key={index} className="group relative">
               <div className="flex items-start gap-2">
-                <span className="definition-badge shrink-0 mt-1">
+                <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary shrink-0 mt-1">
                   {index + 1}
                 </span>
                 <div className="flex-1 space-y-1">
@@ -21,7 +21,7 @@ export const Meanings: React.FC<IMeaningsProps> = ({ meaning }) => {
                   </p>
                   {definition.example && (
                     <p className="text-muted-foreground italic text-sm pl-4 border-l-2 border-muted">
-                      "{definition.example}"
+                      &ldquo;{definition.example}&rdquo;
                     </p>
                   )}
                 </div>
@@ -35,7 +35,7 @@ export const Meanings: React.FC<IMeaningsProps> = ({ meaning }) => {
             <p className="text-sm font-semibold mb-2">Synonyms:</p>
             <div className="flex flex-wrap gap-2">
               {meaning.synonyms.map((synonym, index) => (
-                <span key={index} className="synonym-chip">
+                <span key={index} className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm transition-colors hover:bg-primary/10">
                   {synonym}
                 </span>
               ))}
